@@ -1,8 +1,9 @@
 import { Layout } from '@/layout/Layout';
 import { useState } from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Button, FormControl } from 'react-bootstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { FaPlus } from 'react-icons/fa';
 
 const ItemType = 'ROW';
 
@@ -23,7 +24,7 @@ const DraggableRow = ({ index, id, moveRow, data }) => {
   });
 
   return (
-    <tr ref={(node) => ref(drop(node))}>
+    <tr ref={(node) => ref(drop(node))} style={{ cursor: 'move' }}>
       <td>{data.name}</td>
       <td>{data.surname}</td>
       <td>{data.gender}</td>
@@ -70,6 +71,8 @@ const ViewEmployees = () => {
     },
   ]);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const moveRow = (dragIndex, hoverIndex) => {
     const dragRow = employees[dragIndex];
     const newEmployees = [...employees];
@@ -78,12 +81,31 @@ const ViewEmployees = () => {
     setEmployees(newEmployees);
   };
 
+  const filteredEmployees = employees.filter(employee =>
+    Object.values(employee).some(value =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
   return (
-      <DndProvider backend={HTML5Backend}>
-        <div className="container">
-          <h1>View Employees</h1>
-          <Table bordered>
-            <thead>
+    <DndProvider backend={HTML5Backend}>
+        <div className="container mt-4">
+          <h1 className="mb-4">View Employees</h1>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <FormControl
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-25"
+            />
+            <Button variant="primary" href="/create-employee">
+              <FaPlus className="mr-2" />
+              Add Employee
+            </Button>
+          </div>
+          <Table bordered striped hover responsive>
+            <thead className="thead-dark">
               <tr>
                 <th>Name</th>
                 <th>Surname</th>
@@ -99,7 +121,7 @@ const ViewEmployees = () => {
               </tr>
             </thead>
             <tbody>
-              {employees.map((employee, index) => (
+              {filteredEmployees.map((employee, index) => (
                 <DraggableRow
                   key={index}
                   index={index}
@@ -111,7 +133,7 @@ const ViewEmployees = () => {
             </tbody>
           </Table>
         </div>
-      </DndProvider>
+    </DndProvider>
   );
 };
 

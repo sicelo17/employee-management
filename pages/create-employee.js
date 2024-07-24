@@ -1,5 +1,6 @@
-import { Layout } from '@/layout/Layout';
 import { useState } from 'react';
+import { FaArrowCircleRight } from "react-icons/fa";
+import { FaRegSave } from "react-icons/fa";
 import { Tab, Tabs, Form, Button, Modal, Row, Col, Card } from 'react-bootstrap';
 
 const CreateEmployee = () => {
@@ -105,6 +106,11 @@ const CreateEmployee = () => {
                     </Col>
                   </Row>
                 </Form>
+                <div className="text-center mt-3">
+                  <Button variant="primary" onClick={() => setKey('education')}>
+                    Next <FaArrowCircleRight />
+                  </Button>
+                </div>
               </Tab>
               <Tab eventKey="education" title="Education">
                 <Form>
@@ -156,11 +162,13 @@ const CreateEmployee = () => {
                     </Col>
                   </Row>
                 </Form>
+                <div className="text-center mt-3 d-flex align-items-center justify-content-center">
+                  <Button variant="success">
+                    Submit <FaRegSave />
+                  </Button>
+                </div>
               </Tab>
             </Tabs>
-            <div className="text-center mt-3">
-              <Button variant="primary">Submit</Button>
-            </div>
           </Card.Body>
         </Card>
 
@@ -175,9 +183,11 @@ const CreateEmployee = () => {
                 <Form.Label>Gender</Form.Label>
                 <Form.Control id="newGender" />
               </Form.Group>
-              <Button onClick={() => handleGenderAdd(document.getElementById('newGender').value)}>
+              <div className='text-center mt-3'>
+              <Button variant='success' onClick={() => handleGenderAdd(document.getElementById('newGender').value)}>
                 Add
               </Button>
+              </div>
             </Form>
           </Modal.Body>
         </Modal>
