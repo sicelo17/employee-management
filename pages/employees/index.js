@@ -4,6 +4,7 @@ import { Table, Button, FormControl } from 'react-bootstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { FaPlus } from 'react-icons/fa';
+import Link from 'next/link';
 import axios from 'axios';
 import next from 'next';
 
@@ -25,9 +26,15 @@ const DraggableRow = ({ index, id, moveRow, data }) => {
     },
   });
 
+  const encodedName = encodeURIComponent(data.employee_name);
+
   return (
     <tr ref={(node) => ref(drop(node))} style={{ cursor: 'move' }}>
-      <td>{data.employee_name}</td>
+     <td>
+     <Link href={`/employees/${encodedName}`} passHref>
+          <span>{data.employee_name}</span>
+        </Link>
+      </td>
       <td>{data.last_name}</td>
       <td>{data.gender}</td>
      
@@ -62,8 +69,9 @@ const ViewEmployees = () => {
           "education.year_of_completion",
           "education.class_grade"
         ]);
-        const url = `/api/resource/Employee%20Test?fields=${encodeURIComponent(fields)}`;
 
+        const url = `/api/resource/Employee%20Test?fields=${encodeURIComponent(fields)}`;
+        
         const response = await fetch(url, {
           next: { revalidate: 30 },
           headers: {
@@ -96,10 +104,11 @@ const ViewEmployees = () => {
 
   const filteredEmployees = employees.filter(employee =>
     Object.values(employee).some(value =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      value !== null && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
-
+  
+  
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="container mt-4">
@@ -112,7 +121,7 @@ const ViewEmployees = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-25"
           />
-          <Button variant="primary" href="/create-employee">
+          <Button variant="primary" href="/employees/create">
             <FaPlus className="mr-2" />
             Add Employee
           </Button>
