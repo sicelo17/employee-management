@@ -9,8 +9,7 @@ const EmployeeDetails = () => {
   const [employee, setEmployee] = useState(null);
   const [formData, setFormData] = useState(null);
   
-  const decodedName = decodeURIComponent(name);
-
+  
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
@@ -46,7 +45,7 @@ const EmployeeDetails = () => {
 
     if (name) {
       fetchEmployee();
-      fetchLevels();
+      //fetchLevels();
     }
   }, [name]);
 
@@ -71,16 +70,34 @@ const EmployeeDetails = () => {
   };
   const handleSave = async () => {
     try {
-      await axios.put(`/api/resource/Employee%20Test/${decodedName}`, formData , {
+      const decodedName = decodeURIComponent(name);
+  
+      const response = await axios.put(`/api/resource/Employee%20Test/${decodedName}`, formData, {
         headers: {
           'Authorization': 'token 61cbbeddebf298f:71d86f85911a40e',
+          'Content-Type': 'application/json' // Ensure the content type is set correctly
         },
+        timeout: 10000 // 10 seconds timeout
       });
+  
+      console.log('Response:', response.data);
       alert('Employee details updated successfully!');
     } catch (error) {
-      console.error('Error saving employee:', error);
+      if (error.response) {
+        // Server responded with a status other than 200 range
+        console.error('Error response:', error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('Error request:', error.request);
+      } else {
+        // Something else caused the error
+        console.error('Error message:', error.message);
+      }
+      alert('Failed to save employee details. Please check the console for more information.');
     }
   };
+  
+  
 
   if (!employee) return <p>Loading...</p>;
 

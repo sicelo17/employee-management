@@ -121,10 +121,13 @@ const ViewEmployees = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-25"
           />
-          <Button variant="primary" href="/employees/create">
+          <Link href="/employees/create">
+          <Button variant="primary">
             <FaPlus className="mr-2" />
             Add Employee
           </Button>
+          </Link>
+          
         </div>
         <Table bordered striped hover responsive>
           <thead className="thead-dark">
